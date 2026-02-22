@@ -49,18 +49,32 @@ void rule::parse(tokenizer &tokens, void *data)
 	tokens.increment(true);
 	tokens.expect<assignment>();
 
-	tokens.increment(true);
-	tokens.expect("->");
-
-	tokens.increment(true);
-	tokens.expect<expression>();
-
-	if (tokens.decrement(__FILE__, __LINE__, data)) {
-		implicant.parse(tokens, data);
+	bool shortcut = true;
+	tokens.push();
+	while (shortcut) {
+		string token = tokens.next();
+		if (token == "\n") {
+			break;
+		} else if (token == "->") {
+			shortcut = false;
+		}
 	}
+	tokens.pop();
 
-	if (tokens.decrement(__FILE__, __LINE__, data)) {
-		tokens.next();
+	if (not shortcut) {
+		tokens.increment(true);
+		tokens.expect("->");
+
+		tokens.increment(true);
+		tokens.expect<expression>();
+
+		if (tokens.decrement(__FILE__, __LINE__, data)) {
+			implicant.parse(tokens, data);
+		}
+
+		if (tokens.decrement(__FILE__, __LINE__, data)) {
+			tokens.next();
+		}
 	}
 
 	if (tokens.decrement(__FILE__, __LINE__, data)) {
@@ -147,7 +161,7 @@ void rule::parse(tokenizer &tokens, void *data)
 }
 
 bool rule::is_next(tokenizer &tokens, int i, void *data) {
-	return expression::is_next(tokens, i, data);
+	return expression::is_next(tokens, i, data) or assignment::is_next(tokens, i, data);
 }
 
 void rule::register_syntax(tokenizer &tokens) {

@@ -140,7 +140,7 @@ bool rule_set::is_next(tokenizer &tokens, int i, void *data) {
 		i++;
 	}
 
-	return rule::is_next(tokens, i, data) || tokens.is_next("{");
+	return rule::is_next(tokens, i, data) or tokens.is_next("{");
 }
 
 void rule_set::register_syntax(tokenizer &tokens) {
