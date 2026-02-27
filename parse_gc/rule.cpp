@@ -47,7 +47,7 @@ void rule::parse(tokenizer &tokens, void *data)
 	tokens.expect("{");
 
 	tokens.increment(true);
-	tokens.expect<assignment>();
+	tokens.expect<simple_composition>();
 
 	bool shortcut = true;
 	tokens.push();
@@ -161,7 +161,7 @@ void rule::parse(tokenizer &tokens, void *data)
 }
 
 bool rule::is_next(tokenizer &tokens, int i, void *data) {
-	return expression::is_next(tokens, i, data) or assignment::is_next(tokens, i, data);
+	return expression::is_next(tokens, i, data) or simple_composition::is_next(tokens, i, data);
 }
 
 void rule::register_syntax(tokenizer &tokens) {
@@ -173,7 +173,7 @@ void rule::register_syntax(tokenizer &tokens) {
 		tokens.register_token<parse::white_space>(false);
 		tokens.register_token<parse::new_line>(true);
 		expression::register_syntax(tokens);
-		assignment::register_syntax(tokens);
+		simple_composition::register_syntax(tokens);
 	}
 }
 

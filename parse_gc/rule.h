@@ -13,7 +13,7 @@ struct rule : parse::syntax {
 
 	expression assume;
 	expression implicant;
-	assignment action;
+	simple_composition action;
 	bool weak;
 	bool force;
 	bool pass;
