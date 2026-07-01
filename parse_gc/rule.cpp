@@ -178,7 +178,15 @@ void rule::register_syntax(tokenizer &tokens) {
 }
 
 string rule::to_string(string tab) const {
-	string result = implicant.to_string(tab) + "->" + action.to_string(tab);
+	string result;
+	if (implicant.valid) {
+		result += implicant.to_string(tab) + "->";
+	}
+	if (action.valid) {
+		result += action.to_string(tab);
+	} else {
+		result += "skip";
+	}
 	if (assume.valid) {
 		result += " {" + assume.to_string(tab) + "}";
 	}
