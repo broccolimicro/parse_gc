@@ -9,7 +9,7 @@ rule_set::rule_set() {
 	debug_name = "gc_rule_set";
 }
 
-rule_set::rule_set(tokenizer &tokens, void *data) {
+rule_set::rule_set(tokenizer &tokens, std::any data) {
 	debug_name = "gc_rule_set";
 	parse(tokens, data);
 }
@@ -17,7 +17,7 @@ rule_set::rule_set(tokenizer &tokens, void *data) {
 rule_set::~rule_set() {
 }
 
-void rule_set::parse(tokenizer &tokens, void *data) {
+void rule_set::parse(tokenizer &tokens, std::any data) {
 	tokens.syntax_start(this);
 
 	tokens.increment(false);
@@ -37,7 +37,7 @@ void rule_set::parse(tokenizer &tokens, void *data) {
 		tokens.expect<parse::new_line>();
 
 		int constraint = -1;
-		if (tokens.decrement(__FILE__, __LINE__, data)) {
+		if (tokens.decrement(__FILE__, __LINE__)) {
 			found = true;
 			string value = tokens.next();
 			if (value == "require") {
@@ -72,22 +72,22 @@ void rule_set::parse(tokenizer &tokens, void *data) {
 					tokens.expect("static");
 				}
 
-				if (tokens.decrement(__FILE__, __LINE__, data)) {
+				if (tokens.decrement(__FILE__, __LINE__)) {
 					if (constraint == REQUIRE) {
 						require.push_back(tokens.next());
 					} else if (constraint == ASSUME) {
 						assume.push_back(tokens.next());
 					}
 				}
-			} while (tokens.decrement(__FILE__, __LINE__, data));
+			} while (tokens.decrement(__FILE__, __LINE__));
 			
-			if (tokens.decrement(__FILE__, __LINE__, data)) {
+			if (tokens.decrement(__FILE__, __LINE__)) {
 				tokens.next();
 			}
 		}
 	}
 
-	while (tokens.decrement(__FILE__, __LINE__, data))
+	while (tokens.decrement(__FILE__, __LINE__))
 	{
 		if (tokens.found("{")) {
 			tokens.next();
@@ -105,19 +105,19 @@ void rule_set::parse(tokenizer &tokens, void *data) {
 			tokens.expect<rule_set>();
 
 			bool regionadded = false;
-			if (tokens.decrement(__FILE__, __LINE__, data))
+			if (tokens.decrement(__FILE__, __LINE__))
 			{
 				regions.push_back(rule_set(tokens, data));
 				regionadded = true;
 			}
 
-			if (tokens.decrement(__FILE__, __LINE__, data))
+			if (tokens.decrement(__FILE__, __LINE__))
 				tokens.next();
 
-			if (tokens.decrement(__FILE__, __LINE__, data))
+			if (tokens.decrement(__FILE__, __LINE__))
 				tokens.next();
 
-			if (tokens.decrement(__FILE__, __LINE__, data) && regionadded)
+			if (tokens.decrement(__FILE__, __LINE__) && regionadded)
 				regions.back().region = tokens.next();
 
 		} else if (tokens.found<parse::new_line>()) {
@@ -135,7 +135,7 @@ void rule_set::parse(tokenizer &tokens, void *data) {
 	tokens.syntax_end(this);
 }
 
-bool rule_set::is_next(tokenizer &tokens, int i, void *data) {
+bool rule_set::is_next(tokenizer &tokens, int i, std::any data) {
 	while (tokens.is_next<parse::new_line>(i)) {
 		i++;
 	}

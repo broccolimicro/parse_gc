@@ -4,19 +4,7 @@
 
 namespace parse_gc {
 
-parse::syntax *produce(tokenizer &tokens, void *data) {
-	return new rule_set(tokens, data);
-}
-
-void expect(tokenizer &tokens) {
-	tokens.expect<rule_set>();
-}
-
-void register_syntax(tokenizer &tokens) {
-	rule_set::register_syntax(tokens);
-}
-
-const parse::factory factory(register_syntax, expect, produce);
+const parse::factory factory(parse::schema::from<rule_set>());
 
 }
 

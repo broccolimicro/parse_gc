@@ -16,7 +16,7 @@ rule::rule() {
 	after = std::numeric_limits<uint64_t>::max();
 }
 
-rule::rule(tokenizer &tokens, void *data)
+rule::rule(tokenizer &tokens, std::any data)
 {
 	debug_name = "gc_rule";
 	parse(tokens, data);
@@ -27,7 +27,7 @@ rule::~rule()
 
 }
 
-void rule::parse(tokenizer &tokens, void *data)
+void rule::parse(tokenizer &tokens, std::any data)
 {
 	weak = false;
 	force = false;
@@ -68,20 +68,20 @@ void rule::parse(tokenizer &tokens, void *data)
 		tokens.increment(true);
 		tokens.expect<expression>();
 
-		if (tokens.decrement(__FILE__, __LINE__, data)) {
+		if (tokens.decrement(__FILE__, __LINE__)) {
 			implicant.parse(tokens, data);
 		}
 
-		if (tokens.decrement(__FILE__, __LINE__, data)) {
+		if (tokens.decrement(__FILE__, __LINE__)) {
 			tokens.next();
 		}
 	}
 
-	if (tokens.decrement(__FILE__, __LINE__, data)) {
+	if (tokens.decrement(__FILE__, __LINE__)) {
 		action.parse(tokens, data);
 	}
 
-	if (tokens.decrement(__FILE__, __LINE__, data)) {
+	if (tokens.decrement(__FILE__, __LINE__)) {
 		tokens.next();
 
 		tokens.increment(true);
@@ -90,16 +90,16 @@ void rule::parse(tokenizer &tokens, void *data)
 		tokens.increment(true);
 		tokens.expect<expression>();
 
-		if (tokens.decrement(__FILE__, __LINE__, data)) {
+		if (tokens.decrement(__FILE__, __LINE__)) {
 			assume.parse(tokens, data);
 		}
 
-		if (tokens.decrement(__FILE__, __LINE__, data)) {
+		if (tokens.decrement(__FILE__, __LINE__)) {
 			tokens.next();
 		}
 	}
 
-	if (tokens.decrement(__FILE__, __LINE__, data)) {
+	if (tokens.decrement(__FILE__, __LINE__)) {
 		tokens.next();
 
 		tokens.increment(true);
@@ -123,7 +123,7 @@ void rule::parse(tokenizer &tokens, void *data)
 			tokens.expect("pass");
 			tokens.expect("after");
 
-			if (tokens.decrement(__FILE__, __LINE__, data)) {
+			if (tokens.decrement(__FILE__, __LINE__)) {
 				string value = tokens.next();
 				if (value == "keep") {
 					keep = true;
@@ -138,35 +138,34 @@ void rule::parse(tokenizer &tokens, void *data)
 					tokens.expect<parse::number>();
 					tokens.increment(true);
 					tokens.expect("=");
-					if (tokens.decrement(__FILE__, __LINE__, data)) {
+					if (tokens.decrement(__FILE__, __LINE__)) {
 						tokens.next();
 					}
-					if (tokens.decrement(__FILE__, __LINE__, data)) {
+					if (tokens.decrement(__FILE__, __LINE__)) {
 						after = stoull(tokens.next());
 					}
 				}
 			}
-		} while (tokens.decrement(__FILE__, __LINE__, data));
+		} while (tokens.decrement(__FILE__, __LINE__));
 
-		if (tokens.decrement(__FILE__, __LINE__, data)) {
+		if (tokens.decrement(__FILE__, __LINE__)) {
 			tokens.next();
 		}
 	}
 
-	if (tokens.decrement(__FILE__, __LINE__, data)) {
+	if (tokens.decrement(__FILE__, __LINE__)) {
 		tokens.next();
 	}
 
 	tokens.syntax_end(this);
 }
 
-bool rule::is_next(tokenizer &tokens, int i, void *data) {
+bool rule::is_next(tokenizer &tokens, int i, std::any data) {
 	return expression::is_next(tokens, i, data) or simple_composition::is_next(tokens, i, data);
 }
 
 void rule::register_syntax(tokenizer &tokens) {
 	if (!tokens.syntax_registered<rule>()) {
-		setup_expressions();
 		tokens.register_syntax<rule>();
 		tokens.register_token<parse::symbol>();
 		tokens.register_token<parse::number>();

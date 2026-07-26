@@ -8,7 +8,7 @@ namespace parse_gc {
 
 struct rule : parse::syntax {
 	rule();
-	rule(tokenizer &tokens, void *data = NULL);
+	rule(tokenizer &tokens, std::any data=std::any());
 	~rule();
 
 	expression assume;
@@ -20,8 +20,8 @@ struct rule : parse::syntax {
 	bool keep;
 	uint64_t after;
 
-	void parse(tokenizer &tokens, void *data = NULL);
-	static bool is_next(tokenizer &tokens, int i = 1, void *data = NULL);
+	void parse(tokenizer &tokens, std::any data=std::any());
+	static bool is_next(tokenizer &tokens, int i = 1, std::any data=std::any());
 	static void register_syntax(tokenizer &tokens);
 
 	string to_string(string tab = "") const;
