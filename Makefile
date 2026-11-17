@@ -1,6 +1,6 @@
 NAME          = parse_gc
-DEPEND        = parse_expression parse_ucs parse common
-TEST_DEPEND   = parse_expression parse_ucs parse common
+DEPEND        = parse_expression parse_choy parse common
+TEST_DEPEND   = parse_expression parse_choy parse common
 COVERAGE ?= 0
 
 ifeq ($(COVERAGE),0)
